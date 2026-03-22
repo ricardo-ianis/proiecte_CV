@@ -29,5 +29,5 @@ Acest proiect conține o suită de scripturi Bash pentru administrarea utilizato
 
 @Cerinte tehnice
 
-# Sistem de operare: Linux / Unix.
-# Utilitare necesare: bash, grep, sed, sha256sum, du, find.
+# Sistem de operare: Linux / Unix
+# Utilitare necesare: bash, grep, sed, sha256sum, du, find
