@@ -4,7 +4,7 @@ Acest proiect conține o suită de scripturi Bash pentru administrarea utilizato
 
 @Functionalitati
 
-# Inregistrare utilizatori noi cu validarea adresei de email
+ Inregistrare utilizatori noi cu validarea adresei de email
 # Verificarea complexitatii parolei: minimum 8 caractere, litere mari, litere mici, cifre si caractere speciale
 # Stocarea securizata a parolelor folosind hash SHA-256
 # Autentificare cu verificarea credentialelor si actualizarea campului lastLogin in registru
