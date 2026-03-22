@@ -1,33 +1,45 @@
-@Sistem de Gestiune Utilizatori - Bash
+# Sistem de Gestiune Utilizatori (Bash)
 
-Acest proiect conține o suită de scripturi Bash pentru administrarea utilizatorilor într-un mediu Linux, incluzând module pentru înregistrare, autentificare și raportare.
+Acest proiect reprezintă un sistem modular de administrare a conturilor de utilizator, scris în Shell Scripting. Include funcționalități de securitate, validare și monitorizare a resurselor.
 
-@Functionalitati
+## Functionalitati principale
 
- Inregistrare utilizatori noi cu validarea adresei de email
- Verificarea complexitatii parolei: minimum 8 caractere, litere mari, litere mici, cifre si caractere speciale
- Stocarea securizata a parolelor folosind hash SHA-256
- Autentificare cu verificarea credentialelor si actualizarea campului lastLogin in registru
- Generarea de rapoarte in fundal (background) despre fisierele si spatiul utilizat de un user
- Interfata interactiva prin meniu pentru accesarea functiilor
+* Inregistrare utilizator: Validarea numelui de utilizator, a adresei de email și a complexității parolei.
+* Securitate sporita: Parolele sunt convertite în hash-uri SHA-256 pentru a preveni stocarea în clar.
+* Autentificare: Verificarea identității prin compararea hash-urilor și actualizarea câmpului 'lastLogin'.
+* Raportare resurse: Calcularea numărului de fișiere și a spațiului ocupat pe disc în mod asincron (background process).
+* Mediu de lucru: La logare reușită, utilizatorul primește o instanță nouă de Bash în directorul său personal.
 
-@Structura fisierelor
+## Structura proiectului
 
- mainMenu.sh: Scriptul principal care afiseaza meniul si directioneaza catre celelalte module
- logout.sh: Gestioneaza procesul de creare a unui cont nou (nume, email, parola)
- autentificare.sh: Realizeaza logarea si deschide o sesiune de lucru in directorul utilizatorului
- inregistrare.sh: Calculeaza numarul de fisiere si dimensiunea directorului home
- verificareUtilizator.sh: Contine regulile de validare pentru parola
- verificareMail.sh: Valideaza formatul sintactic al adresei de email
- caractereSpeciale.sh: Verifica existenta simbolurilor speciale in parola
- registruUtilizatori.csv: Fisier text tip baza de date pentru stocarea informatiilor
+* mainMenu.sh: Scriptul central care rulează meniul interactiv.
+* logout.sh: Gestionează fluxul de creare a conturilor noi (user, mail, parola).
+* autentificare.sh: Modulul care se ocupă de procesul de login.
+* inregistrare.sh: Generează raportul de activitate (fisiere, directoare, dimensiune).
+* verificareUtilizator.sh: Verifică dacă parola respectă regulile de securitate.
+* verificareMail.sh: Validarea sintactică a adreselor de email.
+* caractereSpeciale.sh: Verifică prezența simbolurilor speciale în șirurile de caractere.
+* registruUtilizatori.csv: Sursa de date unde sunt stocate informațiile conturilor.
 
-@Instructiuni de utilizare
+## Cerinte Sistem
 
- Acordati permisiuni de executie tuturor fisierelor .sh: chmod +x *.sh
- Rulati meniul principal pentru a incepe: ./mainMenu.sh
+* Sistem de operare: Linux / Unix / WSL.
+* Utilitare necesare: bash, sha256sum, grep, sed, du, find.
 
-@Cerinte tehnice
+## Instalare si Utilizare
 
- Sistem de operare: Linux / Unix
- Utilitare necesare: bash, grep, sed, sha256sum, du, find
+1. Clonati proiectul si asigurati-va ca toate fisierele sunt in acelasi director.
+2. Acordati drepturi de executie:
+   chmod +x *.sh
+
+3. Porniti aplicatia:
+   ./mainMenu.sh
+
+## Reguli de securitate parola
+
+Pentru a fi acceptata, o parola trebuie sa indeplineasca urmatoarele:
+* Minimum 8 caractere.
+* Cel putin o litera mica (a-z).
+* Cel putin o litera mare (A-Z).
+* Cel putin o cifra (0-9).
+* Cel putin un caracter special (ex: !, @, #, $, %).
