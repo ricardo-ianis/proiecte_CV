@@ -1,0 +1,320 @@
+CREATE TABLE CATEGORII (
+id_categorie NUMBER(10) PRIMARY KEY,
+denumire VARCHAR2(50) NOT NULL,
+descriere VARCHAR2(200));
+
+CREATE TABLE FURNIZORI (
+id_furnizor NUMBER(10) PRIMARY KEY,
+nume VARCHAR2(100) NOT NULL,
+tara VARCHAR2(50),
+email VARCHAR2(100),
+telefon VARCHAR2(20));
+
+CREATE TABLE PRODUSE (
+id_produs NUMBER(10) PRIMARY KEY,
+denumire VARCHAR2(100) NOT NULL,
+descriere VARCHAR2(200),
+pret NUMBER(10,2) NOT NULL,
+stoc NUMBER(10),
+id_categorie NUMBER(10),
+id_furnizor NUMBER(10),
+CONSTRAINT fk_prod_cat FOREIGN KEY (id_categorie)
+REFERENCES CATEGORII(id_categorie),
+CONSTRAINT fk_prod_furn FOREIGN KEY (id_furnizor) 
+REFERENCES FURNIZORI(id_furnizor));
+
+CREATE TABLE CLIENTI (
+id_client NUMBER(10) PRIMARY KEY,
+nume VARCHAR2(50) NOT NULL,
+prenume VARCHAR2(50),
+email VARCHAR2(100) UNIQUE,
+telefon VARCHAR2(20),
+adresa VARCHAR2(200),
+oras VARCHAR2(50),
+tara VARCHAR2(50));
+
+CREATE TABLE COMENZI (
+id_comanda NUMBER(10) PRIMARY KEY,
+data_comanda DATE DEFAULT SYSDATE,
+status VARCHAR2(25),
+total NUMBER(10,2),
+id_client NUMBER(10),
+CONSTRAINT fk_com_client FOREIGN KEY (id_client) 
+REFERENCES CLIENTI(id_client));
+
+CREATE TABLE DETALII_COMANDA (
+id_detaliu NUMBER(10) PRIMARY KEY,
+id_comanda NUMBER(10),
+id_produs NUMBER(10),
+cantitate NUMBER(10),
+pret_unitar NUMBER(10,2),
+CONSTRAINT fk_det_com FOREIGN KEY (id_comanda)
+REFERENCES COMENZI(id_comanda),
+CONSTRAINT fk_det_prod FOREIGN KEY (id_produs) 
+REFERENCES PRODUSE(id_produs));
+
+CREATE TABLE PLATI (
+id_plata NUMBER(10) PRIMARY KEY,
+data_plata DATE,
+metoda VARCHAR2(25),
+suma NUMBER(10,2),
+id_comanda NUMBER(10),
+CONSTRAINT fk_plata_com FOREIGN KEY (id_comanda) 
+REFERENCES COMENZI(id_comanda));
+
+CREATE TABLE LIVRARI (
+id_livrare NUMBER(10) PRIMARY KEY,
+curier VARCHAR2(50),
+data_livrare DATE,
+status_livrare VARCHAR2(25),
+id_comanda NUMBER(10),
+CONSTRAINT fk_livr_com FOREIGN KEY (id_comanda)
+REFERENCES COMENZI(id_comanda));
+
+ALTER TABLE CLIENTI 
+ADD (data_nasterii DATE);
+
+ALTER TABLE PRODUSE
+ADD CONSTRAINT ck_pret_pozitiv
+CHECK (pret > 0);
+
+ALTER TABLE FURNIZORI
+RENAME COLUMN telefon TO telefon_contact;
+
+ALTER TABLE CATEGORII
+DROP COLUMN descriere;
+
+DROP TABLE LIVRARI CASCADE CONSTRAINTS;
+FLASHBACK TABLE LIVRARI TO BEFORE DROP;
+SELECT * FROM LIVRARI;
+
+INSERT INTO CATEGORII (id_categorie, denumire) VALUES (1, 'Electronice');
+INSERT INTO CATEGORII (id_categorie, denumire) VALUES (2, 'Electrocasnice');
+INSERT INTO CATEGORII (id_categorie, denumire) VALUES (3, 'IT & Periferice');
+INSERT INTO CATEGORII (id_categorie, denumire) VALUES (4, 'Gaming');
+INSERT INTO CATEGORII (id_categorie, denumire) VALUES (5, 'Smart Home');
+SELECT * FROM CATEGORII;
+
+INSERT INTO FURNIZORI VALUES (10, 'Samsung Romania', 'Romania', 'contact@samsung.ro', '0800123123');
+INSERT INTO FURNIZORI VALUES (20, 'Apple Distribution', 'Irlanda', 'sales@apple.ie', '00353112233');
+INSERT INTO FURNIZORI VALUES (30, 'Logitech Europe', 'Elvetia', 'support@logitech.ch', '004122334455');
+INSERT INTO FURNIZORI VALUES (40, 'Philips Global', 'Olanda', 'contact@philips.nl', '003120556677');
+INSERT INTO FURNIZORI VALUES (50, 'ASUS Global', 'Taiwan', 'info@asus.tw', '008862223344');
+SELECT * FROM FURNIZORI;
+
+INSERT INTO PRODUSE VALUES (100, 'iPhone 15 Pro', 'Smartphone 256GB Titanium', 5900, 15, 1, 20);
+INSERT INTO PRODUSE VALUES (101, 'Samsung Galaxy S24', 'Smartphone AI 128GB', 4200, 20, 1, 10);
+INSERT INTO PRODUSE VALUES (102, 'Laptop Gaming ASUS', 'ROG Strix G16', 7500, 5, 4, 50);
+INSERT INTO PRODUSE VALUES (103, 'Mouse Logitech MX', 'Wireless Master 3S', 550, 50, 3, 30);
+INSERT INTO PRODUSE VALUES (104, 'Friteuza Philips', 'Airfryer XXL', 1100, 12, 2, 40);
+INSERT INTO PRODUSE VALUES (105, 'Sistem Audio Sony', 'Soundbar 5.1', 2300, 8, 1, 10);
+SELECT * FROM PRODUSE;
+
+INSERT INTO CLIENTI (id_client, nume, prenume, email, telefon_mobil, oras, tara) 
+VALUES (1, 'Popescu', 'Andrei', 'andrei.pop@gmail.com', '0722123456', 'Bucuresti', 'Romania');
+INSERT INTO CLIENTI (id_client, nume, prenume, email, telefon_mobil, oras, tara) 
+VALUES (2, 'Ionescu', 'Maria', 'maria.io@yahoo.com', '0744987654', 'Cluj-Napoca', 'Romania');
+INSERT INTO CLIENTI (id_client, nume, prenume, email, telefon_mobil, oras, tara) 
+VALUES (3, 'Smith', 'John', 'john.s@email.com', '0044770090', 'Londra', 'Marea Britanie');
+INSERT INTO CLIENTI (id_client, nume, prenume, email, telefon_mobil, oras, tara) 
+VALUES (4, 'Muller', 'Hans', 'hans.m@berlin.de', '0049151234', 'Berlin', 'Germania');
+INSERT INTO CLIENTI (id_client, nume, prenume, email, telefon_mobil, oras, tara) 
+VALUES (5, 'Dumitrescu', 'Elena', 'elena.d@gmail.com', '0766555444', 'Timisoara', 'Romania');
+SELECT * FROM CLIENTI;
+
+INSERT INTO COMENZI VALUES (500, TO_DATE('15-11-2024','DD-MM-YYYY'), 'Livrata', 5900, 1);
+INSERT INTO COMENZI VALUES (501, TO_DATE('20-11-2024','DD-MM-YYYY'), 'In procesare', 8050, 2);
+INSERT INTO COMENZI VALUES (502, TO_DATE('01-12-2024','DD-MM-YYYY'), 'Anulata', 4200, 3);
+INSERT INTO COMENZI VALUES (503, TO_DATE('05-12-2024','DD-MM-YYYY'), 'Livrata', 550, 1);
+INSERT INTO COMENZI VALUES (504, TO_DATE('10-12-2024','DD-MM-YYYY'), 'Noua', 1100, 5);
+SELECT * FROM COMENZI;
+
+INSERT INTO DETALII_COMANDA VALUES (1, 500, 100, 1, 5900);
+INSERT INTO DETALII_COMANDA VALUES (2, 501, 102, 1, 7500);
+INSERT INTO DETALII_COMANDA VALUES (3, 501, 103, 1, 550);
+INSERT INTO DETALII_COMANDA VALUES (4, 502, 101, 1, 4200);
+INSERT INTO DETALII_COMANDA VALUES (5, 503, 103, 1, 550);
+INSERT INTO DETALII_COMANDA VALUES (6, 504, 104, 1, 1100);
+SELECT * FROM DETALII_COMANDA;
+
+INSERT INTO PLATI VALUES (10, TO_DATE('15-11-2024','DD-MM-YYYY'), 'Card', 5900, 500);
+INSERT INTO PLATI VALUES (11, TO_DATE('21-11-2024','DD-MM-YYYY'), 'Transfer', 8050, 501);
+INSERT INTO PLATI VALUES (12, TO_DATE('05-12-2024','DD-MM-YYYY'), 'Card', 550, 503);
+INSERT INTO PLATI VALUES (13, TO_DATE('10-12-2024','DD-MM-YYYY'), 'Ramburs', 1100, 504);
+SELECT * FROM PLATI;
+
+INSERT INTO LIVRARI VALUES (90, 'Fan Courier', TO_DATE('17-11-2024','DD-MM-YYYY'), 'Livrat', 500);
+INSERT INTO LIVRARI VALUES (91, 'DHL Express', NULL, 'In tranzit', 501);
+INSERT INTO LIVRARI VALUES (92, 'Sameday', TO_DATE('07-12-2024','DD-MM-YYYY'), 'Livrat', 503);
+INSERT INTO LIVRARI VALUES (93, 'Fan Courier', NULL, 'Preluata', 504);
+SELECT * FROM LIVRARI;
+
+UPDATE PRODUSE 
+SET pret = pret * 1.1 
+WHERE id_categorie = 1;
+SELECT * FROM PRODUSE WHERE id_categorie = 1;
+
+UPDATE COMENZI 
+SET status = 'Anulata', total = 0
+WHERE id_client = 3;
+SELECT * FROM COMENZI WHERE id_client = 3;
+
+UPDATE FURNIZORI 
+SET email = 'suport_ro@samsung.com' 
+WHERE nume = 'Samsung Romania';
+
+DELETE FROM LIVRARI 
+WHERE curier = 'Sameday';
+SELECT * FROM LIVRARI;
+ROLLBACK;
+SELECT * FROM LIVRARI;
+
+SELECT denumire, pret, stoc
+FROM PRODUSE
+WHERE stoc < 10;
+
+SELECT c.nume, c.prenume, com.data_comanda, com.total
+FROM CLIENTI c
+INNER JOIN COMENZI com ON c.id_client = com.id_client;
+
+SELECT cat.denumire AS Categorie, p.denumire AS Produs
+FROM CATEGORII cat
+LEFT JOIN PRODUSE p ON cat.id_categorie = p.id_categorie;
+
+SELECT f.nume AS Furnizor, p.denumire AS Produs
+FROM PRODUSE p
+RIGHT JOIN FURNIZORI f ON p.id_furnizor = f.id_furnizor;
+
+SELECT c.nume, com.id_comanda
+FROM CLIENTI c
+FULL OUTER JOIN COMENZI com ON c.id_client = com.id_client;
+
+SELECT c.denumire, SUM(p.pret * p.stoc) AS valoare_totala_stoc 
+FROM CATEGORII c 
+JOIN PRODUSE p ON c.id_categorie = p.id_categorie 
+GROUP BY c.denumire;
+
+SELECT f.nume, ROUND(AVG(p.pret), 2) AS pret_mediu
+FROM FURNIZORI f
+JOIN PRODUSE p ON f.id_furnizor = p.id_furnizor
+GROUP BY f.nume;
+
+SELECT id_categorie, COUNT(id_produs) AS nr_produse
+FROM PRODUSE
+GROUP BY id_categorie
+HAVING COUNT(id_produs) > 1;
+
+SELECT id_comanda, 
+ROUND(MONTHS_BETWEEN(SYSDATE, data_comanda), 1) AS luni_vechime,
+EXTRACT(YEAR FROM data_comanda) AS an_comanda
+FROM COMENZI;
+
+SELECT UPPER(nume) || ' ' || UPPER(prenume) AS nume_complet, 
+SUBSTR(oras, 1, 3) AS cod_oras
+FROM CLIENTI;
+
+SELECT denumire, 
+ROUND(pret) AS pret_rotunjit, 
+MOD(pret, 100) AS rest_impartire
+FROM PRODUSE;
+
+SELECT id_plata, suma,
+DECODE(metoda, 'Card', 'Online', 'Ramburs', 'Cash', metoda) AS metoda_noua
+FROM PLATI;
+
+SELECT denumire, pret,
+CASE 
+WHEN pret < 2000 THEN 'Accesibil'
+WHEN pret BETWEEN 2000 AND 5000 THEN 'Premium'
+ELSE 'Lux'
+END AS categorie_pret
+FROM PRODUSE;
+
+SELECT denumire, pret
+FROM PRODUSE
+WHERE pret > (SELECT AVG(pret) FROM PRODUSE);
+
+SELECT nume, prenume 
+FROM CLIENTI 
+WHERE id_client IN (
+SELECT id_client FROM COMENZI 
+WHERE data_comanda = (SELECT MAX(data_comanda) FROM COMENZI));
+
+SELECT tara FROM CLIENTI
+UNION
+SELECT tara FROM FURNIZORI;
+
+SELECT tara FROM CLIENTI
+INTERSECT
+SELECT tara FROM FURNIZORI;
+
+SELECT tara FROM CLIENTI
+MINUS
+SELECT tara FROM FURNIZORI;
+
+SELECT LEVEL, denumire
+FROM CATEGORII
+CONNECT BY PRIOR id_categorie = id_categorie - 1
+START WITH id_categorie = 1;
+
+SELECT * FROM CLIENTI
+WHERE nume LIKE 'P%';
+
+SELECT denumire, pret
+FROM PRODUSE
+WHERE pret BETWEEN 100 AND 5000;
+
+SELECT c.nume, p.denumire, d.cantitate
+FROM CLIENTI c
+JOIN COMENZI com ON c.id_client = com.id_client
+JOIN DETALII_COMANDA d ON com.id_comanda = d.id_comanda
+JOIN PRODUSE p ON d.id_produs = p.id_produs;
+
+SELECT nume, NVL(telefon_contact, 'Lipsa telefon') AS contact
+FROM FURNIZORI;
+
+CREATE OR REPLACE VIEW v_status_livrari AS
+SELECT c.nume, c.prenume, c.oras, l.curier, l.status_livrare
+FROM CLIENTI c
+JOIN COMENZI com ON c.id_client = com.id_client
+JOIN LIVRARI l ON com.id_comanda = l.id_comanda;
+
+SELECT * FROM v_status_livrari;
+
+CREATE INDEX idx_client_email ON CLIENTI(email);
+SELECT * FROM CLIENTI WHERE email = 'andrei.pop@gmail.com';
+
+CREATE SEQUENCE seq_livrari
+START WITH 100
+INCREMENT BY 1
+NOCYCLE
+NOCACHE;
+
+INSERT INTO LIVRARI (id_livrare, curier, data_livrare, status_livrare, id_comanda)
+VALUES (seq_livrari.NEXTVAL, 'Sameday', SYSDATE, 'Preluata', 501);
+
+SELECT * FROM LIVRARI WHERE id_livrare >= 100;
+
+CREATE OR REPLACE PUBLIC SYNONYM STOC FOR PRODUSE;
+SELECT denumire, pret, stoc FROM STOC;
+
+CREATE TABLE PLATI_ARHIVA (
+id_plata NUMBER(10),
+data_plata DATE,
+suma NUMBER(10,2))
+
+PARTITION BY RANGE (data_plata) (
+PARTITION plati_vechi VALUES LESS THAN (TO_DATE('01-01-2024', 'DD-MM-YYYY')),
+PARTITION plati_2024 VALUES LESS THAN (TO_DATE('01-01-2025', 'DD-MM-YYYY')),
+PARTITION plati_viitoare VALUES LESS THAN (MAXVALUE)
+);
+
+INSERT INTO PLATI_ARHIVA (id_plata, data_plata, suma)
+SELECT id_plata, data_plata, suma FROM PLATI;
+
+SELECT * FROM PLATI_ARHIVA;
+
+SELECT * FROM USER_CLUSTERS;
+
+
+
