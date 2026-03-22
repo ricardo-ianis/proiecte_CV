@@ -1,4 +1,4 @@
-# Sistem de Gestiune Utilizatori (Bash)
+## Sistem de Gestiune Utilizatori (Bash)
 
 Acest proiect reprezintă un sistem modular de administrare a conturilor de utilizator, scris în Shell Scripting. Include funcționalități de securitate, validare și monitorizare a resurselor.
 
