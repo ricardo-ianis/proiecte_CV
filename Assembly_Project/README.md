@@ -1,39 +1,48 @@
-## Sistem de Monitorizare si Alerta Senzori - Assembly x86
+## Număr de vocale și de consoane - Assembly x86
 
-Acest proiect reprezinta o aplicatie realizata in limbaj de asamblare (Assembly x86) destinata monitorizarii si gestionarii datelor provenite de la senzori de temperatura, umiditate si presiune. Sistemul este conceput sa detecteze depasirea pragurilor critice si sa emita alerte vizuale pentru utilizator.
+Acest proiect este un program scris in limbaj de asamblare (Assembly x86, arhitectura 16-bit) conceput pentru a rula in medii DOS (precum DOSBox). Aplicatia analizeaza un sir de caractere introdus de utilizator si calculeaza numarul de vocale si consoane prezente.
 
-## Functionalitati principale
+## Descriere
 
-* Monitorizare senzori: Prelucrarea valorilor citite de la senzorii de temperatura, umiditate si presiune.
-* Validare praguri: Compararea automata a datelor de intrare cu limitele de siguranta predefinite in segmentul de date.
-* Sistem de alerta: Generarea de mesaje de avertizare specifice in consola atunci cand se detecteaza anomalii.
-* Gestionare stari: Afisarea statusului "Sistem OK" sau a detaliilor despre tipul de alerta declansata.
-* Optimizare hardware: Utilizarea eficienta a registrilor procesorului pentru viteza maxima de executie si consum minim de memorie.
+Programul solicita utilizatorului introducerea unui sir de text (maxim 100 de caractere). Acesta proceseaza fiecare caracter in parte, verifica daca acesta face parte din alfabet (A-Z sau a-z) si il clasifica drept vocala sau consoana. La final, rezultatele sunt afisate pe ecran, fiind capabil sa randeze numere formate din una sau doua cifre prin conversia valorilor din registri in caractere ASCII.
 
-## Structura proiectului
+## Functionalitati
 
-* proiect_assembly.asm: Fisierul sursa principal care contine segmentele de date, stiva si logica de control a programului.
-* Explicații proiect Assembly-BTI.docx: Documentatia tehnica ce descrie arhitectura sistemului, functionarea algoritmilor si utilizarea registrilor.
+* Citirea dinamica a input-ului de la tastatura pana la apasarea tastei Enter.
+* Ignorarea automata a numerelor, spatiilor si a caracterelor speciale.
+* Logica de comparare pentru ambele registre (litere mici si litere mari).
+* Conversie matematica pentru afisarea corecta a numerelor (zeci si unitati).
+* Utilizarea intreruperilor standard DOS (INT 21h).
 
-## Detalii tehnice
+## Detalii Tehnice
 
-* Arhitectura: Intel x86 (8086).
-* Registri utilizati: AX, BX, CX, DX pentru operatii aritmetice si logice; DS, SS, CS pentru gestionarea segmentelor de memorie.
-* Control flux: Implementarea deciziilor prin instructiuni de comparare (CMP) si salturi conditionale (JE, JNE, JG, JL).
-* Structura memoriei: Organizare riguroasa pe segmente de date (data segment), stiva (stack segment) si cod (code segment).
+Proiectul foloseste modelul de memorie SMALL si este structurat in segmente de date (.DATA) si cod (.CODE).
 
-## Instalare si Rulare
+* Registrul SI: Utilizat ca index pentru parcurgerea buffer-ului de memorie.
+* Registrul AL/AH: Utilizat pentru operatii de intrare/iesire si calcule aritmetice (DIV).
+* Buffer: Alocare de 100 de bytes pentru stocarea sirului.
+* Set de comparatie: Definirea explicita a vocalelor (aeiouAEIOU) in segmentul de date.
 
-1. Utilizati un emulator precum DOSBox impreuna cu utilitarele TASM (Turbo Assembler) sau NASM.
-2. Asamblati fisierul sursa:
-   tasm proiect_assembly.asm
-3. Realizati link-ul fisierului obiect:
-   tlink proiect_assembly.obj
-4. Rulati programul executabil:
-   proiect_assembly.exe
+## Instructiuni de Compilare si Rulare
 
-## Parametri supravegheati
+Pentru a rula acest program, aveti nevoie de un asamblor (TASM sau MASM) si un emulator DOSBox.
 
-* Temperatura: Prevenirea defectiunilor cauzate de caldura excesiva in sistem.
-* Umiditate: Asigurarea conditiilor optime de functionare pentru componentele electronice.
-* Presiune: Monitorizarea constanta pentru evitarea avariilor mecanice sau a exploziilor.
+1. Asamblarea fisierului sursa:
+   tasm nume_fisier.asm
+
+2. Crearea fisierului executabil:
+   tlink nume_fisier.obj
+
+3. Rularea aplicatiei:
+   nume_fisier.exe
+
+## Exemplu de Utilizare
+
+Dupa rulare, interactiunea cu programul arata astfel:
+
+Input:
+Introduceti un sir de caractere: Test de verificare 2026
+
+Output:
+Numarul de vocale este: 7
+Numarul de consoane este: 9
